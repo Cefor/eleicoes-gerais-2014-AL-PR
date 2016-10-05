@@ -1,0 +1,257 @@
+---
+output: html_document
+---
+## Métodos Inferenciais em Pesquisas Legislativas
+## Mestrado Profissional em Poder Legislativo
+### *Prof. Fabiano Peruzzo Schwartz*
+___
+### Artigo
+### **ELEIÇÕES 2014: UM COMPARATIVO ENTRE IDADES DE CANDIDATOS DOS ESTADOS DE ALAGOAS E PARANÁ**
+### Anexo
+###
+### Osvaldo Mazzola Junior
+#### 23/06/2016
+___
+
+#### **Análises e Resultados**
+
+Carregar dados primários:
+
+```{r}
+dadosAL <- read.csv("consulta_cand_2014_AL.txt",header = FALSE, sep=";")
+
+dadosPR <- read.csv("consulta_cand_2014_PR.txt",header = FALSE, sep=";")
+```
+
+De acordo com o arquivo de *layout* fornecido pelo próprio TSE, na tabela de candidatos, a idade em anos na data da eleição se encontra na variável 29 (V29).
+
+```{r}
+idadeAL <- dadosAL$V29
+idadePR <- dadosPR$V29
+```
+
+Verificar se valor mínimo da idade está dentro do limite constitucional, acima de 18 anos, na data da eleição, e se o valor máximo da idade é razoável.
+```{r}
+cat("Idades Mínimas dos Candidatos", "\n", "Alagoas: ", min(idadeAL), "\n", "Paraná : ", min(idadePR), "\n")
+```
+
+As idades mínimas dos candidatos para ambos os estados está ok. Verificando idade máxima:
+
+```{r}
+cat("Idades Máximas dos Candidatos", "\n", "Alagoas: ", max(idadeAL), "\n", "Paraná : ", max(idadePR), "\n")
+```
+
+Os valores para as idades máximas dos candidatos para ambos os estados é razoável.
+
+Verifica-se também se os valores das idades em anos são inteiros, por meio do seguinte algorítimo: 
+
+. truncam-se os valores no vetor de idades;
+
+. subtraem-se os valores truncados do vetor original;
+
+. somam-se os valores dessas diferenças;
+
+. se o resultado dessa soma for zero, então os valores no vetor de idades original eram inteiros.
+
+
+Primeiro para os candidatos de Alagoas:
+
+```{r}
+idadetruncada <- NULL
+diferenca <- NULL
+
+idadetruncada <- trunc(idadeAL)
+diferenca <- idadeAL - idadetruncada
+sum(diferenca)
+```
+
+Soma zero, portanto os valores das idades são inteiros.
+
+A seguir para os candidatos do Paraná:
+
+```{r}
+idadetruncada <- NULL
+diferenca <- NULL
+
+idadetruncada <- trunc(idadePR)
+diferenca <- idadePR - idadetruncada
+sum(diferenca)
+```
+
+Da mesma forma, soma zero, portanto os valores das idades são inteiros.
+
+
+Considera-se então que os valores das idades estão no formato *tidy*, ou seja, prontos para análise.
+
+___
+
+**Análise Descritiva**
+
+Apresenta-se aqui uma análise descritiva dos dados, com os aspectos representativos do comportamento das idades dos candidatos nos estados avaliados.
+
+
+```{r}
+cat("Média", "\n", "Alagoas: ", round(mean(idadeAL), 2), "\n", "Paraná : ", round(mean(idadePR), 2), "\n")
+cat("Mediana", "\n", "Alagoas: ", round(median(idadeAL), 2), "\n", "Paraná : ", round(median(idadePR), 2), "\n")
+cat("Amplitude", "\n", "Alagoas: ", round(max(idadeAL) - min(idadeAL), 2), "\n", "Paraná : ", round(max(idadePR) - min(idadePR), 2), "\n")
+cat("Amplitude Interquartil", "\n", "Alagoas: ", round(quantile(idadeAL,0.75) - quantile(idadeAL,0.25)), "\n", "Paraná : ", round(quantile(idadePR,0.75) - quantile(idadePR,0.25)), "\n")
+cat("Desvio Padrão", "\n", "Alagoas: ", round(sd(idadeAL), 2), "\n", "Paraná : ", round(sd(idadePR), 2), "\n")
+cat("Variância", "\n", "Alagoas: ", round(var(idadeAL), 2), "\n", "Paraná : ", round(var(idadePR), 2), "\n")
+cat("Coeficiente de Variação", "\n", "Alagoas: ", round(sd(idadeAL) / mean(idadeAL), 2), "\n", "Paraná : ", round(sd(idadePR) / mean(idadePR), 2), "\n")
+
+```
+
+Todos os parâmetros estatísticos descritivos, relacionados com as idades dos candidatos em Alagoas e Paraná, são muito próximos entre si, o que poderia sugerir, pelo senso comum, não haver diferença relevante entre as médias das idades das candidaturas entre esses estados. Entretanto, testes adicionais são necessários para chegar-se a esse tipo de inferência.
+
+___
+
+**Histogramas**
+
+```{r}
+hist(idadeAL, main = "Alagoas", xlab = "Idade Candidatos", ylab = "Freqüência")
+hist(idadePR, main = "Paraná", xlab = "Idade Candidatos", ylab = "Freqüência")
+```
+
+
+___
+
+**Análise de Normalidade**
+
+Para efeito de análise de normalidade, foi escolhido o teste de Kolmogorov-Smirnov, considerando-se que a distribuição de freqüência em análise se aproxima de uma distribuição normal para um nível de confiança de 95%.
+
+Para Alagoas:
+```{r, warning=FALSE}
+z=(idadeAL-mean(idadeAL))/sd(idadeAL)
+ks.test(z,"pnorm")
+```
+
+Para Paraná:
+```{r, warning=FALSE}
+z=(idadePR-mean(idadePR))/sd(idadePR)
+ks.test(z,"pnorm")
+```
+
+Em ambos os casos tem-se p > 0,05, ou seja, não existem evidências estatísticas significativas para se rejeitar a hipótese nula do teste e, portanto, as distribuições são consideradas normais. Assim, ambas distribuições de freqüências das idades dos candidatos podem ser representadas pelas respectivas médias e desvios-padrão. 
+
+Entretanto, uma vez que os dados em análise não são de populações em si, mas de duas amostras sob comparação, uma em relação à outra, e que podem pertencer a uma população (ainda desconhecida), no lugar do desvio-padrão será usado o erro padrão como estimativa de desvio para essas amostras.
+
+
+___
+
+**Comparação das médias das idades dos candidatos de Alagoas e Paraná**
+
+Para efeito de comparação das médias das idades são *plotadas* duas distribuições normais, com médias e erros-padrão das idades dos candidatos de Alagoas e Paraná.
+
+Nesta comparação, foi utilizado um nível de confiança (NC) de 95%.
+
+
+```{r Função dnormalComp, echo=FALSE}
+dnormalComp <- function(media1=0, dp1=1, media2=0, dp2=1, nc=.95, rc="=")
+{
+
+  ########################
+  # Script principal
+  ########################
+  
+  # eixo x da curva normal
+  lim <- c(
+           min(c(media1+c(-4,4)*dp1, media2+c(-4,4)*dp2)), 
+           max(c(media1+c(-4,4)*dp1, media2+c(-4,4)*dp2))
+         )
+  x <- seq(lim[1], lim[2], by = 0.01)
+  
+  # curva normal
+  cn1 <- function(x) {dnorm(x,media1,dp1)} # curva normal
+  cn2 <- function(x) {dnorm(x,media2,dp2)} # curva normal
+  
+  # traça as curvas normais 1 e 2
+  if(cn1(media1)>=cn2(media2)){
+    plot(x,cn1(x),ylab="Densidade",xlab="x",
+         main="Curva Normal",type="l",lwd=2)
+    lines(x,cn2(x),lwd=2, col="red")
+  } else {
+    plot(x,cn2(x),ylab="Densidade",xlab="x",
+         main="Curva Normal",type="l",lwd=2,col="red")
+    lines(x,cn1(x),lwd=2)
+  }
+    
+
+  # linha horzontal em zero
+  lines(lim,c(0,0))
+  
+  # linhas da média
+  lines(c(media1,media1),c(-1,cn1(media1)),lwd=4,type="l")
+  lines(c(media2,media2),c(-1,cn2(media2)),lwd=4,type="l",col="red")
+  
+  # intervalos de confiaça
+  if(rc=="="){
+    xI11 <- media1 - qnorm(nc+(1-nc)/2)*dp1
+    xI12 <- media1 + qnorm(nc+(1-nc)/2)*dp1
+    xI21 <- media2 - qnorm(nc+(1-nc)/2)*dp2
+    xI22 <- media2 + qnorm(nc+(1-nc)/2)*dp2
+  } else if(rc=="<"){
+    xI11 <- media1 - 4*dp1
+    xI12 <- media1 + qnorm(1-nc)*dp1
+    xI21 <- media2 - 4*dp2
+    xI22 <- media2 + qnorm(1-nc)*dp2    
+  } else if(rc==">"){
+    xI11 <- media1 + qnorm(nc)*dp1
+    xI12 <- media1 + 4*dp1
+    xI21 <- media2 + qnorm(nc)*dp2
+    xI22 <- media2 + 4*dp2    
+  }
+    
+  
+  inc <- (xI12-xI11)/20
+  i<-xI11+inc
+  lines(c(i,i),c(-1,cn1(i)),col="black",lty=4,lwd=2)
+  while(i < xI12){
+    lines(c(i,i),c(0,cn1(i)),col="black",lwd=0.5)
+    i<-i+inc
+  }
+  lines(c(i,i),c(-1,cn1(i)),col="black",lty=4,lwd=2)
+  
+  inc <- (xI22-xI21)/20
+  i<-xI21+inc
+  lines(c(i,i),c(-1,cn2(i)),col="red",lty=4,lwd=2)
+  while(i < xI22){
+    lines(c(i,i),c(0,cn2(i)),col="red",lwd=0.5)
+    i<-i+inc
+  }
+  lines(c(i,i),c(-1,cn2(i)),col="red",lty=4,lwd=2)
+}      
+```
+
+
+```{r}
+dnormalComp(mean(idadeAL), sd(idadeAL)/sqrt(length(idadeAL)), mean(idadePR), sd(idadePR)/sqrt(length(idadePR)))
+```
+
+A curva que representa os dados de Alagoas está traçada em preto, enquanto a que representa os dados do Paraná está em vermelho.
+
+As linhas verticais tracejadas em cada distribuição normal representam os limites da região crítica, ou seja, daquela na qual os valores da estatística do teste levam à rejeição da hipótese nula (Ho). 
+
+Observa-se que para o NC escolhido, as médias das idades dos candidatos (representadas pelas linhas mais grossas centrais), encontram-se dentro das regiões críticas da outra distribuição. Ou seja, a média das idades dos candidatos de Alagoas (linha preta mais grossa) se localiza na região crítica da distribuição de freqüência das idades dos candidatos do Paraná, e vice-versa.
+
+
+Buscou-se também confirmar esses achados por meio do teste *t de Student*.
+
+___
+
+**Teste t de Student**
+
+Foi utilizada a comparação entre as médias de duas amostras independentes com variâncias diferentes, para um nível de confiança de 95%, modelo que se adequa à situação em estudo.
+
+```{r}
+t.test(idadeAL,idadePR, conf.level = .95)
+```
+
+___
+
+Este resultado confirma a comparação anterior, uma vez que **p < 0,05**, ou seja, é possível rejeitar Ho.
+
+___
+**Conclusão**
+
+Pelo exposto, conclui-se que há indícios suficientes para a rejeição de Ho, o que equivale a dizer que, **com um nível de confiança de 95%, é possível inferir que há diferença significativa entre a média de idade dos candidatos nas eleições gerais brasileiras de 2014, para os estados de Alagoas e Paraná.** Interessante notar que esse achado contraria a conclusão pelo senso comum exposta anteriormente neste trabalho.
+
