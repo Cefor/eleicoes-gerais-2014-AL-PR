@@ -1,16 +1,8 @@
 ---
 output: html_document
 ---
-## Métodos Inferenciais em Pesquisas Legislativas
-## Mestrado Profissional em Poder Legislativo
-### *Prof. Fabiano Peruzzo Schwartz*
 ___
-### Artigo
-### **ELEIÇÕES 2014: UM COMPARATIVO ENTRE IDADES DE CANDIDATOS DOS ESTADOS DE ALAGOAS E PARANÁ**
-### Anexo
-###
-### Osvaldo Mazzola Junior
-#### 23/06/2016
+### **MÉTODOS QUANTITATIVOS APLICADOS À CIÊNCIA POLÍTICA: UMA ABORDAGEM SOB A ÓTICA DA REPRODUTIBILIDADE**
 ___
 
 #### **Análises e Resultados**
