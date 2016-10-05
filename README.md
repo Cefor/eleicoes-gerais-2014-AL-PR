@@ -4,7 +4,7 @@ Trata-se de estudo sobre dados eleitorais, por meio de método quantitativo de c
 
 ## Reprodutibilidade.Rmd
 
-Arquivo que contém todo o código R que produz os resultados descritivos e inferenciais.
+Arquivo que contém o código R para a produção dos resultados descritivos e inferenciais.
 
 ## consulta_cand_2014_AL.txt
 
