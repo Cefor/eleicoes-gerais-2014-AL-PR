@@ -6,6 +6,10 @@ Trata-se de estudo sobre dados eleitorais, por meio de método quantitativo de c
 
 Arquivo que contém o código R para a produção dos resultados descritivos e inferenciais.
 
+## NormalCompara.R
+
+Arquivo que contém código da função **dnormalComp()**, utilizada para efetuar a comparação das médias de duas distribuições normais.
+
 ## consulta_cand_2014_AL.txt
 
 Arquivo extraído do [repositório de dados eleitorais do TSE](http://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais), referente aos candidatos às eleições de 2014 em Alagoas.
